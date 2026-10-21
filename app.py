@@ -329,7 +329,7 @@ def render_header():
 # ------------------------- Sidebar -------------------------
 
 def render_sidebar(df):
-    st.sidebar.title("Dashboard Filters")
+    st.sidebar.title("🔍 Dashboard Filters")
 
     country = st.sidebar.multiselect(
         "Country",
