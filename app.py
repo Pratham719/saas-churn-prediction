@@ -226,39 +226,39 @@ def apply_theme():
     .prediction-value{color:var(--accent);font-size:clamp(11px,2vw,27px);font-weight:800;margin:12px 0 7px;overflow-wrap:anywhere}
     @media(max-width:768px){.prediction-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.prediction-card{padding:10px 5px}.prediction-label,.prediction-subtitle{font-size:9px}.prediction-value{font-size:clamp(10px,2.8vw,16px);margin:8px 0 5px}}
     
-    /* ===== Sidebar multiselect: dark background and purple tags ===== */
 
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="select"] {
-        background-color: #111722 !important;
-        border: 1px solid rgba(108, 99, 255, 0.50) !important;
-        border-radius: 8px !important;
-    }
+    /* ===== Sidebar multiselect: force dark styling ===== */
 
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="value-container"] {
-        background-color: #111722 !important;
-    }
+section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="select"] > div {
+    background-color: #111722 !important;
+    border: 1px solid rgba(108, 99, 255, 0.50) !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+}
 
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="tag"] {
-        background-color: #29264F !important;
-        border: 1px solid rgba(108, 99, 255, 0.65) !important;
-        border-radius: 6px !important;
-        color: #C7D2FE !important;
-    }
+section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="value-container"] {
+    background-color: #111722 !important;
+}
 
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="tag"] span {
-        color: #C7D2FE !important;
-    }
+section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="tag"] {
+    background-color: #29264F !important;
+    border: 1px solid rgba(108, 99, 255, 0.65) !important;
+    color: #C7D2FE !important;
+}
 
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="tag"] svg {
-        fill: #C7D2FE !important;
-        color: #C7D2FE !important;
-    }
+section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="tag"] * {
+    color: #C7D2FE !important;
+    fill: #C7D2FE !important;
+}
 
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] input {
-        color: #C8D0E8 !important;
-        -webkit-text-fill-color: #C8D0E8 !important;
-    }
+section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="control-container"] {
+    background-color: transparent !important;
+}
 
+section[data-testid="stSidebar"] [data-testid="stMultiSelect"] input {
+    color: #C8D0E8 !important;
+    -webkit-text-fill-color: #C8D0E8 !important;
+}
     </style>
     """, unsafe_allow_html=True)
 
