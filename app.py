@@ -79,53 +79,48 @@ def apply_theme():
     /* ================ TABS ================ */
 
     .stTabs [data-baseweb="tab-list"] {
-    gap: 0.7rem;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-}
+        gap: 0.7rem;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
     .stTabs [data-baseweb="tab"] {
-    background: transparent;
-    border: none;
-    color: #858DA3;
-    font-size: 1rem;
-    font-weight: 500;
-    padding: 0.5rem 0.3rem;
-}
+        background: transparent;
+        border: none;
+        color: #858DA3;
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 0.5rem 0.3rem;
+    }
     .stTabs [data-baseweb="tab"]:hover {
-    background: transparent;
-    color: #D5D9E5;
-}
+        background: transparent;
+        color: #D5D9E5;
+    }
     .stTabs [data-baseweb="tab-highlight"] {
-    background-color: #A78BFA;
-}
+        background-color: #A78BFA;
+    }
     .stTabs [data-baseweb="tab-border"] {
-    background-color: transparent;
-}
-    /* =============== FILTERS ==================== */
+        background-color: transparent;
+    }
+    
+/* =============== FILTERS ==================== */
 
-    div[data-baseweb="select"] > div {
-        background: #111722 !important;
-        border: 1px solid rgba(108,99,255,0.20) !important;
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="select"],
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="select"] > div {
+        background-color: #111722 !important;
+        border: 1px solid rgba(108, 99, 255, 0.35) !important;
         border-radius: 8px !important;
-        color: #C8D0E8 !important;
     }
-    div[data-baseweb="select"] > div:hover {
-        border-color: rgba(108,99,255,0.45) !important;
-    }
-    section[data-testid="stSidebar"] [data-baseweb="tag"] {
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="tag"] {
         background-color: rgba(108, 99, 255, 0.22) !important;
         border: 1px solid rgba(108, 99, 255, 0.50) !important;
         border-radius: 6px !important;
-    }
-    section[data-testid="stSidebar"] [data-baseweb="tag"] span {
         color: #C7D2FE !important;
     }
-    section[data-testid="stSidebar"] [data-baseweb="tag"] svg {
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="tag"] span {
+        color: #C7D2FE !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="tag"] svg {
         fill: #C7D2FE !important;
         color: #C7D2FE !important;
-    }
-    section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
-        background-color: #111722 !important;
-        border-color: rgba(108, 99, 255, 0.35) !important;
     }
     div[data-testid="stRadio"] label {
         color: #A8B0C4 !important;
