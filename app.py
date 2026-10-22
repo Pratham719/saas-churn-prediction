@@ -111,8 +111,21 @@ def apply_theme():
     div[data-baseweb="select"] > div:hover {
         border-color: rgba(108,99,255,0.45) !important;
     }
-    .stMultiSelect [data-baseweb="tag"] {
-        background: rgba(108,99,255,0.25) !important;
+    section[data-testid="stSidebar"] [data-baseweb="tag"] {
+        background-color: rgba(108, 99, 255, 0.22) !important;
+        border: 1px solid rgba(108, 99, 255, 0.50) !important;
+        border-radius: 6px !important;
+    }
+    section[data-testid="stSidebar"] [data-baseweb="tag"] span {
+        color: #C7D2FE !important;
+    }
+    section[data-testid="stSidebar"] [data-baseweb="tag"] svg {
+        fill: #C7D2FE !important;
+        color: #C7D2FE !important;
+    }
+    section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+        background-color: #111722 !important;
+        border-color: rgba(108, 99, 255, 0.35) !important;
     }
     div[data-testid="stRadio"] label {
         color: #A8B0C4 !important;
@@ -233,6 +246,12 @@ def apply_theme():
         .block-container { padding-left: 1rem; padding-right: 1rem; }
         .kpi-row { grid-template-columns: 1fr; }
     }
+    .prediction-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%}
+    .prediction-card{min-width:0;overflow:hidden;box-sizing:border-box;background:linear-gradient(145deg,#171F30,#101622);border:1px solid #30394B;border-top:3px solid var(--accent);border-radius:14px;padding:20px}
+    .prediction-label,.prediction-subtitle{color:#8A94B2;font-size:12px;overflow-wrap:anywhere}
+    .prediction-label{font-weight:700;text-transform:uppercase;letter-spacing:.7px}
+    .prediction-value{color:var(--accent);font-size:clamp(11px,2vw,27px);font-weight:800;margin:12px 0 7px;overflow-wrap:anywhere}
+    @media(max-width:768px){.prediction-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.prediction-card{padding:10px 5px}.prediction-label,.prediction-subtitle{font-size:9px}.prediction-value{font-size:clamp(10px,2.8vw,16px);margin:8px 0 5px}}
     </style>
     """, unsafe_allow_html=True)
 
@@ -258,42 +277,44 @@ PAL = {
 }
 
 churn_labels = {0: "Retained", 1: "Churned"}
+country_short = {
+    "Australia": "AU", "Canada": "CA", "France": "FR",
+    "Germany": "DE", "India": "IN", "United Kingdom": "UK",
+    "United States": "US"
+}
 
-def style_chart(fig, x_title="", y_title=""):
-
+def style_chart(fig, x_title="", y_title="", marg=None, height=380):
     fig.update_layout(
         template="plotly_dark",
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-
-        font=dict(
-            family="Inter, sans-serif" ,color="#FFFFFF" ,size=12
-        ),
-        margin=dict(t=50,b=40,l=40,r=60),
-
-        title_font=dict(
-            size=16 ,color="#FFFFFF" ,family="Inter"
-        ),
-        legend_font=dict(color="#FFFFFF" ,size=12)
+        font=dict(family="Inter", color="#E2E8F0", size=12),
+        margin=marg or dict(t=50, b=40, l=40, r=60),
+        height=height,
+        title_font=dict(size=16, color="#E2E8F0"),
+        legend_font=dict(size=11, color="#8A94B2"),
+        xaxis_title=x_title,
+        yaxis_title=y_title
     )
-    if x_title:
-        fig.update_xaxes(title_text=x_title)
-
-    if y_title:
-        fig.update_yaxes(title_text=y_title)
-
-    fig.update_xaxes(showgrid=False,zeroline=False,color="#8A94B2")
-    
-    fig.update_yaxes(showgrid=True,gridcolor="rgba(255,255,255,0.05)",
-        zeroline=False,color="#8A94B2")
+    fig.update_xaxes(showgrid=False, zeroline=False, color="#8A94B2", automargin=True)
+    fig.update_yaxes(showgrid=True, gridcolor="rgba(255,255,255,0.05)", zeroline=False, color="#8A94B2", automargin=True)
     return fig
 
-def style_bar(fig, x_title="", y_title="", pos="outside", template=None, scale=False, legend=False,radius=6):
-    fig = style_chart(fig, x_title, y_title)
+
+def style_bar(fig, x_title="", y_title="", pos="outside", template=None,scale=False,
+                legend=False, radius=6, marg=None, height=380, legend_layout=None):
+    
+    fig = style_chart(fig, x_title, y_title, marg=marg, height=height)
     fig.update_layout(coloraxis_showscale=scale, showlegend=legend)
+    
+    if legend_layout is not None:   
+        fig.update_layout(legend=legend_layout)
+    
     fig.update_traces(textposition=pos, cliponaxis=False, marker=dict(cornerradius=radius))
-    if template is not None:
+    
+    if template is not None:    
         fig.update_traces(texttemplate=template)
+    
     return fig
 
 # ------------------------- Header -------------------------
@@ -452,17 +473,17 @@ def recommendation_card():
          "DevTools has a 31.0% churn rate, with 35 of 113 customers leaving. This segment shows a notable retention concern.",
          "Compare feature adoption, support activity, and subscription patterns to identify behaviors linked to customer churn."),
 
-        ("02", "Acquisition Quality", "CHANNEL ANALYSIS", "INVESTIGATE", "#FFB347",
-         "Event-referred customers have a 30.2% churn rate, with 29 of 96 customers leaving. Acquisition source may be worth investigating.",
-         "Compare churn rates and customer retention across referral sources to identify channels associated with longer-lasting subscriptions."),
+        ("02", "Refund Patterns", "CHURN SIGNAL", "INVESTIGATE", "#00D4AA",
+         "Churned customers have average refunds of 20.63, compared with 16.37 for retained customers. This difference warrants further investigation.",
+         "Analyze refund frequency, amounts, and timing relative to cancellation to determine whether refund activity is associated with churn."),
 
         ("03", "Trial Conversion", "BEHAVIOR ANALYSIS", "REVIEW", "#8B80FF",
          "Trial customers have a 25.8% churn rate, compared with 21.1% for non-trial customers. This difference warrants further investigation, not a causal conclusion.",
          "Compare trial-to-paid conversion, onboarding engagement, and subsequent retention to identify potential improvements."),
 
-        ("04", "Refund Patterns", "CHURN SIGNAL", "INVESTIGATE", "#00D4AA",
-         "Churned customers have average refunds of 20.63, compared with 16.37 for retained customers. This difference warrants further investigation.",
-         "Analyze refund frequency, amounts, and timing relative to cancellation to determine whether refund activity is associated with churn.")
+        ("04", "Acquisition Quality", "CHANNEL ANALYSIS", "INVESTIGATE", "#FFB347",
+         "Event-referred customers have a 30.2% churn rate, with 29 of 96 customers leaving. Acquisition source may be worth investigating.",
+         "Compare churn rates and customer retention across referral sources to identify channels associated with longer-lasting subscriptions.")
     ]
 
     html = html + """<div class="rec-grid">"""
@@ -565,43 +586,45 @@ def section_geography(dff):
     # ---------------- Chart 3: Customer Distribution by Country ----------------
 
     status_data = dff[["country", "churn_flag"]].assign(
-    Status=dff["churn_flag"].map(churn_labels))
-
+        Status=dff["churn_flag"].map(churn_labels),
+        country_short=dff["country"].map(country_short).fillna(dff["country"])
+    )
     fig1 = px.histogram(
-    status_data,
-    x="country",
-    color="Status",
-    barmode="stack",
-    title="Customer Distribution by RETAINED VS CHURNED",
-    category_orders={"country": country_data["country"].tolist()},
-    color_discrete_map={"Retained": PAL["purple"],"Churned": PAL["gold"]},    
-    labels={
-        "country": "Country",
-        "count": "Customers",
-        "Status": "Customer Status"
-    },
-    template="plotly_dark"
-)
-
-
+        status_data,
+        x="country_short",
+        color="Status",
+        barmode="stack",
+        title="Customer Distribution by Country",
+        category_orders={
+            "country_short": country_data["country"].map(country_short).fillna(country_data["country"]).tolist()
+        },        
+        color_discrete_map={"Retained": PAL["purple"],"Churned": PAL["gold"]},    
+        labels={"country_short": "Country", "count": "Customers", "Status": "Customer Status"},
+    )
+    fig1.update_traces(
+        customdata=status_data[["country"]].to_numpy(),
+        hovertemplate="Country=%{customdata[0]}<br>Status=%{fullData.name}<br>Customers=%{y}<extra></extra>"
+    )
     fig1 = style_chart(fig1,y_title="Number of Customers",x_title="")
     st.plotly_chart(fig1, use_container_width=True)
 
     # ---------------- Chart 4: Churn rate by country ----------------
 
-    churn_sorted = country_data.sort_values("churn_rate", ascending=True)
-
+    churn_sorted = country_data.sort_values("churn_rate", ascending=True).copy()
+    churn_sorted["country_short"] = churn_sorted["country"].map(country_short).fillna(churn_sorted["country"])
+    
     fig2 = px.bar(
         churn_sorted,
         x="churn_rate",
-        y="country",
+        y="country_short",
+        custom_data=["country"],
         orientation="h",
         title="Churn Rate (%) by Country",
         color="churn_rate",
         text=churn_sorted["churn_rate"].map(lambda x: f"{x:.1f}%"),
         labels={
             "churn_rate": "Churn Rate (%)",
-            "country": "Country"
+            "country_short": "Country"
         },
         template="plotly_dark"
     )
@@ -625,14 +648,15 @@ def section_geography(dff):
     if "plan_tier" in dff.columns:
 
         heat_data = (
-            dff.groupby(["country", "plan_tier"])["churn_flag"]
-            .agg(["mean", "count"])
-            .reset_index()
+            dff.groupby(["country", "plan_tier"], as_index=False)
+            .agg(churn_rate=("churn_flag", "mean"))
         )
-        heat_data["Churn Rate (%)"] = heat_data["mean"] * 100
+        heat_data["Churn Rate (%)"] = heat_data["churn_rate"] * 100
 
-        heatmap = heat_data.pivot(
-            index="country",
+        heatmap = heat_data.assign(
+            country_short=heat_data["country"].map(country_short).fillna(heat_data["country"])
+        ).pivot(
+            index="country_short",
             columns="plan_tier",
             values="Churn Rate (%)"
         )
@@ -649,7 +673,8 @@ def section_geography(dff):
             template="plotly_dark"
         )
 
-        fig3 = style_chart(fig3)
+        fig3.update_layout(coloraxis_showscale=False)
+        fig3 = style_chart(fig3,marg=dict(t=48, b=30, l=35, r=10),height=425)
         st.plotly_chart(fig3, use_container_width=True)
 
     
@@ -767,15 +792,16 @@ def section_tenure_engagement(dff):
     )
     heatmap_data["churn_rate"] *= 100
 
+    heatmap_data["country_short"] = heatmap_data["country"].map(country_short).fillna(heatmap_data["country"])
+    
     heatmap_pivot = (
         heatmap_data.pivot(
-            index="country",
+            index="country_short",
             columns="tenure_group",
             values="churn_rate"
         )
         .reindex(columns=ordered_groups)
     )
-
     fig3 = px.imshow(
         heatmap_pivot,
         color_continuous_scale=["#101622", "#6C63FF", "#FF6B6B"],
@@ -787,8 +813,8 @@ def section_tenure_engagement(dff):
         },
         title="Churn Rate by Country and Tenure"
     )
-    fig3.update_layout(height=550,autosize=True)
-    fig3 = style_chart(fig3, x_title="Tenure Group", y_title="Country")
+    fig3.update_layout(coloraxis_showscale=False)
+    fig3 = style_chart(fig3, x_title="Tenure Group", y_title="Country",marg=dict(t=48, b=35, l=45, r=10),height=425)
     st.plotly_chart(fig3, use_container_width=True)
 
     st.markdown("""
@@ -817,28 +843,25 @@ def section_subscription_behavior(dff):
     )
     mrr_data["churn_status"] = mrr_data["churn_flag"].map(churn_labels)
     mrr_data["avg_mrr"] = mrr_data["avg_mrr"].round(2)
-    mrr_data["total_recorded_mrr"] = mrr_data["total_recorded_mrr"].round(2)
 
     fig1 = px.bar(
-    mrr_data,
-    x="churn_status",
-    y="avg_mrr",
-    color="churn_status",
-    color_discrete_map={
-        "Retained": PAL["green"],
-        "Churned": PAL["red"]
-    },
-    text="avg_mrr",
-    custom_data=["customer_count", "total_recorded_mrr"],
-    title="Monthly Recurring Revenue by Churn Status",
-    labels={
-        "churn_status": "Churn Status",
-        "avg_mrr": "Average MRR ($)"
-    },
-    category_orders={
-        "churn_status": ["Retained", "Churned"]
-    }
-)
+        mrr_data,
+        x="churn_status",
+        y="avg_mrr",
+        color="churn_status",
+        color_discrete_map={
+            "Retained": PAL["green"],
+            "Churned": PAL["red"]
+        },
+        text="avg_mrr",
+        custom_data=["customer_count", "total_recorded_mrr"],
+        title="Monthly Recurring Revenue by Churn Status",
+        labels={
+            "churn_status": "Churn Status",
+            "avg_mrr": "Average MRR ($)"
+        },
+        category_orders={"churn_status": ["Retained", "Churned"]}
+    )
     fig1.update_traces(
         hovertemplate=(
         "Churn Status = %{x}<br>""Average MRR = $%{y:,.2f}<br>""Customer Count = %{customdata[0]:,.0f}<br>"
@@ -928,8 +951,7 @@ def section_classification():
         st.error(f"Unable to load classification artifacts: {e}")
         st.info(
             "Check that churn_model.pkl, churn_threshold.pkl, "
-            "feature_importance.csv and confusion_matrix.csv exist "
-            "in the expected project folders."
+            "feature_importance.csv and confusion_matrix.csv exist ""in the expected project folders."
         )
         return
 
@@ -982,98 +1004,128 @@ def section_classification():
         pd.DataFrame.from_dict(MODEL_RESULTS, orient="index")
         .rename_axis("Model")
         .reset_index()
-        .melt(
-            id_vars="Model" ,var_name="Metric" ,value_name="Score"
-        )
+        .melt(id_vars="Model", var_name="Metric", value_name="Score")
     )
     comparison_df["Score"] *= 100
 
     fig = px.bar(
         comparison_df,
-        x="Model",
-        y="Score",
-        title=" ",
-        color="Metric",
-        barmode="group",
+        x="Model", y="Score", title=" ",
+        color="Metric", barmode="group",
         text=comparison_df["Score"].round(1),
         color_discrete_map={
-            "Accuracy": PAL["blue"],
-            "Precision": PAL["green"],
-            "Recall": PAL["gold"],
-            "F1": PAL["purple"],
+            "Accuracy": PAL["blue"], "Precision": PAL["green"],
+            "Recall": PAL["gold"], "F1": PAL["purple"],
             "ROC-AUC": PAL["cyan"]
         }
     )
-    fig = style_bar(fig, "Model", "Score (%)", template="%{text:.1f}%", legend=True,radius=0)
-    fig.update_yaxes(range=[0, 115], ticksuffix="%")
-    fig.update_layout(legend_title_text="Metric")
-    
-    fig.update_traces(hovertemplate="Metric=%{fullData.name}<br>Model=%{x}<br>Score=%{y:.0f}%<extra></extra>")
+    fig = style_bar(
+        fig, x_title="Model", y_title="Score (%)", template="%{text:.1f}%",
+        legend=True, radius=0, height=480,
+        marg=dict(t=100, b=55, l=8, r=8),
+        legend_layout=dict(
+            orientation="h", x=0.5, xanchor="center",
+            y=1.08, yanchor="bottom",
+            font=dict(size=10)
+        )
+    )
+    fig.update_layout(
+        bargap=0.10,
+        bargroupgap=0.04,
+        uniformtext_minsize=8,
+        uniformtext_mode="hide"
+    )
+    fig.update_xaxes(
+        automargin=True,
+        tickangle=0,
+        tickfont=dict(size=10)
+    )
+    fig.update_yaxes(
+        range=[0, 115],
+        ticksuffix="%",
+        tickfont=dict(size=10)
+    )
+    fig.update_traces(
+        textposition="outside",
+        cliponaxis=False,
+        hovertemplate=(
+            "Model=%{x}<br>"
+            "Metric=%{fullData.name}<br>"
+            "Score=%{y:.1f}%<extra></extra>"
+        )
+    )
 
     st.markdown("#### Classification Model Performance")
     st.markdown(
         '<div style="color:#929DB4;font-size:0.82rem;margin:-8px 0 12px 2px;">Comparison of candidate models using previously recorded validation results.</div>',
         unsafe_allow_html=True
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config={"responsive": True})
 
     # ---------------- Chart 11 — Confusion Matrix ----------------
-
-    expected_rows = ["Actual Retained", "Actual Churned"]
+    expected_rows = ["Actual Retained", "Actual Churned"] 
     expected_cols = ["Predicted Retained", "Predicted Churned"]
-
     cm_df = cm_df.loc[expected_rows, expected_cols].astype(int)
 
+    cm_df.index = ["Retained", "Churned"]
+    cm_df.columns = ["Retained", "Churned"]
+
     fig_cm = px.imshow(
-        cm_df ,text_auto=True,
+        cm_df,
+        text_auto=True,
         title="Confusion Matrix — Final Model",
-        color_continuous_scale=[
-            [0, "#171C2B"],[0.5, "#5654A5"],[1, "#00D4AA"]
-        ],
+        color_continuous_scale=[[0, "#171C2B"],[0.5, "#5654A5"],[1, "#00D4AA"]],
         aspect="auto",
         labels={
-            "x": "Predicted Status","y": "Actual Status","color": "Customers"
+            "x": "Predicted Status",
+            "y": "Actual Status",
+            "color": "Customers"
         }
     )
-    fig_cm.update_traces(texttemplate="%{z}" ,textfont=dict(size=18))
-
-    fig_cm.update_layout(xaxis=dict(side="bottom") ,coloraxis_colorbar=dict(title="Customers"))
-
-    st.plotly_chart(style_chart(fig_cm, "Predicted Status", "Actual Status") ,use_container_width=True)
-
-    # ---------------- Chart 12 - Feature importance ----------------
-    feature_col = next(
-        (c for c in ["feature", "Feature", "feature_name"]
-         if c in feature_importance.columns),
-        None
+    fig_cm.update_traces(
+        texttemplate="%{z}",textfont=dict(size=16),
+        hovertemplate=("Actual: %{y}<br>""Predicted: %{x}<br>""Customers: %{z}<extra></extra>")
     )
-    importance_col = next(
-        (c for c in ["importance", "Importance", "feature_importance"]
-         if c in feature_importance.columns),
-        None
+    fig_cm.update_layout(
+        xaxis=dict(title="Predicted Status",side="bottom",automargin=True,tickfont=dict(size=11)),
+        yaxis=dict(title="Actual Status",automargin=True,tickfont=dict(size=11)),
+        coloraxis_showscale=False
     )
-    if feature_col and importance_col:
-        top_features = feature_importance.nlargest(10, importance_col).sort_values(importance_col)
-        fig_imp = px.bar(
-            top_features,
-            x=importance_col,
-            y=feature_col,
-            title="Top Features Influencing Churn",
-            orientation="h",
-            text=top_features[importance_col].round(3),
-            color=importance_col,
-            color_continuous_scale=["#5654A5", "#00D4AA"],
-            labels={
-                feature_col: "Feature",
-                importance_col: "Importance"
-            }
-        )
-        fig_imp.update_traces(textposition="outside",cliponaxis=False,
-            hovertemplate="Feature=%{y}<br>Importance=%{x:.3f}<extra></extra>")
-        
-        fig_imp.update_layout(coloraxis_showscale=False)
-        st.plotly_chart(style_chart(fig_imp, "Importance", "Feature"),use_container_width=True)
+    st.plotly_chart(
+        style_chart(fig_cm,"Predicted Status","Actual Status",
+            marg=dict(t=55, b=55, l=12, r=12),height=400
+        ),
+        use_container_width=True,config={"responsive": True}
+    )
     
+    # ---------------- Chart 12: Feature Importance ----------------
+    feature_col = next((c for c in ["feature", "Feature", "feature_name"] if c in feature_importance.columns), None)
+    importance_col = next((c for c in ["importance", "Importance", "feature_importance"] if c in feature_importance.columns), None)
+
+    if feature_col and importance_col:
+        top_features = feature_importance.nlargest(10, importance_col).sort_values(importance_col).copy()
+        feature_names = dict(zip(["Avg Mrr", "Auto Renew Count", "Tenure Months", "Total Usage Duration", "Total Errors", "Upgrade Count", "Seats", "Total Tickets", "Avg Response Minutes", "Total Usage"], 
+            ["AVG MRR", "Auto Renew", "Tenure Months", "Usage Duration", "Total Errors", "Upgrade Count", "Seats", "Total Tickets", "Response Minutes", "Total Usage"]))
+        top_features["feature_label"] = top_features[feature_col].replace(feature_names)        
+        
+        fig_imp = px.bar(
+            top_features, x=importance_col, y="feature_label", orientation="h",
+            text=top_features[importance_col].round(3), color=importance_col,
+            color_continuous_scale=["#5654A5", "#00D4AA"],
+            title="Top Features Influencing Churn",
+            labels={importance_col: "Importance", "feature_label": "Feature"},
+            custom_data=[feature_col]
+        )
+        fig_imp.update_traces(
+            textposition="outside", cliponaxis=False,
+            hovertemplate="Feature=%{customdata[0]}<br>Importance=%{x:.3f}<extra></extra>"
+        )
+        fig_imp.update_layout(coloraxis_showscale=False,bargap=0.25,)
+        fig_imp.update_yaxes(automargin=False, ticklabelstandoff=3)
+
+        st.plotly_chart(style_chart(fig_imp, "Importance", "Feature", height=420,
+            marg=dict(l=5, r=29, t=50, b=35)),use_container_width=True)
+
     st.markdown(f"""
     <div class="insight-box">
         <div class="tag">🤖 Model Performance Insight</div><br>
@@ -1084,36 +1136,26 @@ def section_classification():
 
 # ============================ Tab 6: Prediction & Risk ============================
 def risk_level(probability):
-    if probability >= 0.60: return "HIGH", PAL["red"], "🔴"
-    elif probability >= 0.30: return "MEDIUM", PAL["gold"], "🟡"
+    if probability >= 0.60:     return "HIGH", PAL["red"], "🔴"
+    elif probability >= 0.30:   return "MEDIUM", PAL["gold"], "🟡"
     return "LOW", PAL["green"], "🟢"
 
+
 def prediction_card(label, value, color, subtitle=""):
-    st.markdown(
-        f"""
-        <div style="
-            background:linear-gradient(145deg,#171F30,#101622);
-            border:1px solid #30394B;
-            border-top:3px solid {color};
-            border-radius:14px;
-            padding:20px;
-            min-height:145px;
-        ">
-            <div style="color:#8A94B2;font-size:12px;font-weight:700;
-                        text-transform:uppercase;letter-spacing:0.7px;">
-                {label}
-            </div>
-            <div style="color:{color};font-size:27px;font-weight:800;
-                        margin:12px 0 7px;overflow-wrap:anywhere;">
-                {value}
-            </div>
-            <div style="color:#8A94B2;font-size:12px;">
-                {subtitle}
-            </div>
+    return f"""
+        <div class="prediction-card" style="--accent:{color}">
+            <div class="prediction-label">{label}</div>
+            <div class="prediction-value">{value}</div>
+            <div class="prediction-subtitle">{subtitle}</div>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    """
+
+def prediction_cards(cards):
+    html = '<div class="prediction-grid">'
+    html += "".join(prediction_card(*card) for card in cards)
+    html += '</div>'
+    st.html(html)
+
 
 def section_prediction(df):
     sh("Customer Churn Risk Prediction", "PREDICTION ENGINE")
@@ -1170,30 +1212,14 @@ def section_prediction(df):
             prediction = probability >= threshold
             risk, color, emoji = risk_level(probability)
 
-            result_cols = st.columns(3, gap="medium")
-
-            with result_cols[0]:
-                prediction_card(
-                    "Churn Probability",
-                    f"{probability:.1%}",
-                    PAL["blue"],
-                    "Estimated probability of churn"
-                )
-            with result_cols[1]:
-                prediction_card(
-                    "Risk Category",
-                    f"{emoji} {risk}",
-                    color,
-                    "Based on churn probability"
-                )
-            with result_cols[2]:
-                prediction_card(
-                    "Model Prediction",
-                    "Likely to Churn" if prediction else "Likely to Stay",
-                    PAL["orange"] if prediction else PAL["cyan"],
-                    f"Decision threshold: {threshold:.1%}"
-                )
-                
+            
+            prediction_cards([
+                ("Churn Probability", f"{probability:.1%}", PAL["blue"], "Estimated probability of churn"),
+                ("Risk Category", f"{emoji} {risk}", color, "Based on churn probability"),
+                ("Model Prediction", "Likely to Churn" if prediction else "Likely to Stay",
+                PAL["orange"] if prediction else PAL["cyan"], f"Decision threshold: {threshold:.1%}")
+            ])
+              
             # Dynamic Customer Risk Insight
             if risk == "HIGH":
                 insight = (
