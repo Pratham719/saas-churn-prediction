@@ -268,6 +268,23 @@ def apply_theme():
         background-color: #111722 !important;
     }
 
+    /*------------  Fix the multiselect input background ----------- */
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="select"] {
+        background-color: #111722 !important;
+        border-color: rgba(108, 99, 255, 0.50) !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="select"] > div {
+        background-color: #111722 !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="value-container"] {
+        background-color: #111722 !important;
+    }
+    /* Keep the text readable */
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] input {
+        color: #C8D0E8 !important;
+        -webkit-text-fill-color: #C8D0E8 !important;
+    }
+
     </style>
     """, unsafe_allow_html=True)
 
