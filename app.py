@@ -617,7 +617,7 @@ def section_overview(dff):
             },
             text="churn_rate",
         )
-        fig = style_bar(fig, "Plan Tier", "Churn Rate (%)",template="%{text:.1f}%")
+        fig = style_bar(fig, "Churn Rate (%)" ,"Plan Tier",template="%{text:.1f}%")
         st.plotly_chart(fig, use_container_width=True)
     
     st.markdown("""
@@ -665,8 +665,7 @@ def section_geography(dff):
         labels={"country_short": "Country", "count": "Customers", "Status": "Customer Status"},
     )
     fig1.update_traces(
-        customdata=status_data[["country"]].to_numpy(),
-        hovertemplate="Country=%{customdata[0]}<br>Status=%{fullData.name}<br>Customers=%{y}<extra></extra>"
+        hovertemplate="Country=%{x}<br>Status=%{fullData.name}<br>Customers=%{y}<extra></extra>"
     )
     fig1 = style_chart(fig1,y_title="Number of Customers",x_title="")
     st.plotly_chart(fig1, use_container_width=True)
@@ -982,7 +981,7 @@ def section_subscription_behavior(dff):
 
 # ============================ Tab 5: Classification Model ============================
 MODEL_RESULTS = {
-    "Logistic Regression": {"Accuracy": 0.650,"Precision": 0.303,"Recall": 0.455,"F1": 0.364,"ROC-AUC": 0.646},
+    "Logistic Regression": {"Accuracy": 0.710, "Precision": 0.370, "Recall": 0.455, "F1": 0.408, "ROC-AUC": 0.686},
     "Random Forest":       {"Accuracy": 0.850,"Precision": 0.818,"Recall": 0.409,"F1": 0.545,"ROC-AUC": 0.810},
     "Gradient Boosting":   {"Accuracy": 0.900,"Precision": 0.929,"Recall": 0.591,"F1": 0.722,"ROC-AUC": 0.805}
 }
@@ -1111,7 +1110,7 @@ def section_classification():
 
     st.markdown("#### Classification Model Performance")
     st.markdown(
-        '<div style="color:#929DB4;font-size:0.82rem;margin:-8px 0 12px 2px;">Comparison of candidate models using previously recorded validation results.</div>',
+            '<div style="color:#929DB4;font-size:0.82rem;margin:-8px 0 12px 2px;">Candidate comparison on the VALIDATION set (100 accounts) at the default 0.50 cutoff. Not directly comparable with the test-set cards above.</div>',
         unsafe_allow_html=True
     )
     st.plotly_chart(fig, use_container_width=True, config={"responsive": True})
@@ -1184,14 +1183,14 @@ def section_classification():
     <div class="insight-box">
         <div class="tag">🤖 Model Performance Insight</div><br>
         Selected model: <strong>Gradient Boosting</strong> &nbsp;|&nbsp; Decision threshold: <strong>{threshold:.2f}</strong><br>
-        <strong>Average MRR</strong> is the most influential churn predictor, contributing <strong>52.8%</strong> of total feature importance, followed by <strong>Auto Renew Count (15.2%)</strong> and <strong>Tenure Months (14.6%)</strong>. Together, these three features account for <strong>82.0%</strong> of total feature importance.
+        <strong>Average MRR</strong> is the most influential churn predictor, contributing <strong>52.8%</strong> of total feature importance, followed by <strong>Auto Renew Count (15.2%)</strong> and <strong>Tenure Months (14.6%)</strong>. Together, these three features account for <strong>82.6%</strong> of total feature importance.
     </div>
     """, unsafe_allow_html=True)
 
 # ============================ Tab 6: Prediction & Risk ============================
-def risk_level(probability):
+def risk_level(probability,threshold):
     if probability >= 0.60:     return "HIGH", PAL["red"], "🔴"
-    elif probability >= 0.30:   return "MEDIUM", PAL["gold"], "🟡"
+    elif probability >= threshold:   return "MEDIUM", PAL["gold"], "🟡"
     return "LOW", PAL["green"], "🟢"
 
 
@@ -1264,7 +1263,7 @@ def section_prediction(df):
 
             probability = float(probabilities[classes.index(1)])
             prediction = probability >= threshold
-            risk, color, emoji = risk_level(probability)
+            risk, color, emoji = risk_level(probability,threshold)
 
             
             prediction_cards([
