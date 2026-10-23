@@ -2,14 +2,14 @@
 [theme]
 base = "dark"
 primaryColor = "#6C63FF"
-backgroundColor = "#0B0F19"
-secondaryBackgroundColor = "#111722"
+backgroundColor = "#080B14"
+secondaryBackgroundColor = "#101622"
 textColor = "#E2E8F0"
-borderColor = "#39345F"
+borderColor = "#30394B"
 
 [theme.sidebar]
-primaryColor = "#6C63FF"
-backgroundColor = "#0B0F19"
+primaryColor = "#302044"
+backgroundColor = "#090D17"
 secondaryBackgroundColor = "#111722"
-textColor = "#E2E8F0"
+textColor = "#C8D0E8"
 borderColor = "#39345F"
