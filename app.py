@@ -225,65 +225,90 @@ def apply_theme():
     .prediction-label{font-weight:700;text-transform:uppercase;letter-spacing:.7px}
     .prediction-value{color:var(--accent);font-size:clamp(11px,2vw,27px);font-weight:800;margin:12px 0 7px;overflow-wrap:anywhere}
     @media(max-width:768px){.prediction-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.prediction-card{padding:10px 5px}.prediction-label,.prediction-subtitle{font-size:9px}.prediction-value{font-size:clamp(10px,2.8vw,16px);margin:8px 0 5px}}
-    
-    /* ===== Sidebar multiselect: force dark styling ===== */
 
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="select"] > div {
+    /* ===== SIDEBAR MULTISELECT — CLEAN FINAL CSS ===== */
+
+    /* Main multiselect control and outer border */
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] div:has(> span[data-baseweb="tag"]) {
         background-color: #111722 !important;
-        border: 1px solid rgba(108, 99, 255, 0.50) !important;
+        border: 1px solid #39345F !important;
         border-radius: 8px !important;
         box-shadow: none !important;
-    }
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="value-container"] {
-        background-color: #111722 !important;
-    }
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="tag"] {
-        background-color: #29264F !important;
-        border: 1px solid rgba(108, 99, 255, 0.65) !important;
-        color: #C7D2FE !important;
-    }
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="tag"] * {
-        color: #C7D2FE !important;
-        fill: #C7D2FE !important;
-    }
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="control-container"] {
-        background-color: transparent !important;
-    }
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] input {
-        color: #C8D0E8 !important;
-        -webkit-text-fill-color: #C8D0E8 !important;
+        outline: none !important;
     }
 
-    /* ---------- Fix red selected tags in deployed Streamlit ---------*/
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] .st-emotion-cache-197vr8o {
+    /* Selected tags */
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] span[data-baseweb="tag"] {
         background-color: #29264F !important;
         color: #C7D2FE !important;
         border: 1px solid rgba(108, 99, 255, 0.65) !important;
         border-radius: 6px !important;
     }
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] .st-emotion-cache-197vr8o span {
+
+    /* Text inside selected tags */
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] span[data-baseweb="tag"] span {
+        background-color: transparent !important;
         color: #C7D2FE !important;
-    }
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="select"] > div {
-        background-color: #111722 !important;
+        -webkit-text-fill-color: #C7D2FE !important;
     }
 
-    /*------------  Fix the multiselect input background ----------- */
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="select"] {
-        background-color: #111722 !important;
-        border-color: rgba(108, 99, 255, 0.50) !important;
+    /* Tag remove icon */
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] span[data-baseweb="tag"] svg {
+        fill: #C7D2FE !important;
+        color: #C7D2FE !important;
     }
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="select"] > div {
-        background-color: #111722 !important;
-    }
-    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] [data-baseweb="value-container"] {
-        background-color: #111722 !important;
-    }
-    /* Keep the text readable */
+
+    /* Search input */
     section[data-testid="stSidebar"] [data-testid="stMultiSelect"] input {
-        color: #C8D0E8 !important;
-        -webkit-text-fill-color: #C8D0E8 !important;
+        background-color: transparent !important;
+        color: #E2E8F0 !important;
+        -webkit-text-fill-color: #E2E8F0 !important;
+        caret-color: #A78BFA !important;
     }
+
+    /* Clear All and dropdown icons */
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] svg[title="Clear all"],
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] svg[title="open"] {
+        background-color: transparent !important;
+        color: #C7D2FE !important;
+        fill: #C7D2FE !important;
+    }
+
+    /* Dropdown options */
+    div[data-baseweb="popover"] ul,
+    div[data-baseweb="popover"] li {
+        background-color: #111722 !important;
+        color: #E2E8F0 !important;
+    }
+
+    /* Dropdown hover */
+    div[data-baseweb="popover"] li:hover {
+        background-color: #29264F !important;
+        color: #C7D2FE !important;
+    }
+
+    /* Fix white right-side control wrapper */
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] div:has(> svg[title="Clear all"]) {
+        background-color: #111722 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Keep both icons transparent */
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] svg[title="Clear all"],
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] svg[title="open"] {
+        background-color: transparent !important;
+        color: #C7D2FE !important;
+        fill: #C7D2FE !important;
+    }
+
+    /* Fix the wrapper's possible parent background */
+    section[data-testid="stSidebar"] [data-testid="stMultiSelect"] > div > div > div:last-child {
+        background-color: #111722 !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+    }
+
 
     </style>
     """, unsafe_allow_html=True)
@@ -605,14 +630,19 @@ def section_overview(dff):
 # =================== Tab 2:Geographic Churn Analysis ========================
 
 def section_geography(dff):
-    sh("🌍 Geographic Churn Analysis", "COUNTRY INSIGHTS") 
+    sh("Geographic Churn Analysis", "COUNTRY INSIGHTS") 
     
     if dff.empty or "country" not in dff.columns or "churn_flag" not in dff.columns: 
         st.info("No geographic data available for the selected filters.") 
         return 
     
-    country_data = ( dff.groupby("country", as_index=False) .agg( customers=("account_id", "nunique"), churned=("churn_flag", "sum"), churn_rate=("churn_flag", "mean") ) ) 
-    
+    country_data = (
+        dff.groupby("country", as_index=False)
+        .agg(
+            customers=("account_id", "nunique"),
+            churn_rate=("churn_flag", "mean")
+        )
+    )    
     country_data["churn_rate"] *= 100 
     country_data = country_data.sort_values("customers", ascending=False)
     
@@ -734,11 +764,7 @@ def section_tenure_engagement(dff):
     # Chart 5: Churn Rate by Tenure Group
     tenure_data = (
         dff.groupby("tenure_group", observed=True)
-        .agg(
-            customers=("account_id", "nunique"),
-            churned=("churn_flag", "sum"),
-            churn_rate=("churn_flag", "mean")
-        )
+        .agg(churn_rate=("churn_flag", "mean"))
         .reset_index()
     )
     tenure_data["churn_rate"] *= 100
@@ -1069,7 +1095,6 @@ def section_classification():
         uniformtext_mode="hide"
     )
     fig.update_xaxes(
-        automargin=True,
         tickangle=0,
         tickfont=dict(size=10)
     )
@@ -1079,12 +1104,8 @@ def section_classification():
         tickfont=dict(size=10)
     )
     fig.update_traces(
-        textposition="outside",
-        cliponaxis=False,
         hovertemplate=(
-            "Model=%{x}<br>"
-            "Metric=%{fullData.name}<br>"
-            "Score=%{y:.1f}%<extra></extra>"
+            "Model=%{x}<br>""Metric=%{fullData.name}<br>""Score=%{y:.1f}%<extra></extra>"
         )
     )
 
