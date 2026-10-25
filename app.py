@@ -1187,6 +1187,15 @@ def section_classification():
     </div>
     """, unsafe_allow_html=True)
 
+    st.info(
+        "Model note: the scores and feature rankings on this tab come from the first modelling run. "
+        "Average MRR is missing only for churned accounts, and the churned and retained groups "
+        "use different time windows, so these metrics overstate real predictive ability, and "
+        "Average MRR's top ranking is partly a data artifact, not a business driver. "
+        "A leakage-free rebuild reaches ROC-AUC ≈ 0.50. "
+        "See notebook 04, Section 18."
+    )
+
 # ============================ Tab 6: Prediction & Risk ============================
 def risk_level(probability,threshold):
     if probability >= 0.60:     return "HIGH", PAL["red"], "🔴"
